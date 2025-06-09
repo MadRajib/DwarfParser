@@ -25,15 +25,6 @@ namespace DwarfParser
             var strData = elfFile.Sections.Where(s => s.Name == ".debug_str").First().GetContents();
 
             var abbrevList = ExtractAbbrevList(elfFile);
-
-            // foreach (var item in abbrevList)
-            // {
-            //     Console.Write($"{item.ToString()}\n");
-            //     foreach (var child in item.AttributeList)
-            //     {
-            //         Console.WriteLine($"\t {child.ToString()}");
-            //     }
-            // } 
             var cuList = ExtractCuList(elfFile, abbrevList);
         }
 
@@ -69,14 +60,35 @@ namespace DwarfParser
             while ((cu = Parser.ParseCU(infoBytes, ref index, abbrevList)) != null)
                 cuListFlat.Add(cu);
 
-            // foreach (var c in cuListFlat)
-                // {
-                //     index = 0;
-                //     var inflatedCu = new CompilationUnit(,);
-                //     cuList.Add(inflatedCu);
-                // }
+            foreach (var c in cuListFlat)
+            {
+                index = 0;
+                var dieList = InflateDieListRecursive(c.DieList, ref index);
+                var inflatedCu = new CompilationUnit(c.Cuh, dieList);
+                cuList.Add(inflatedCu);
+            }
 
-                return cuList;
+            return cuList;
+        }
+
+        // Group children to parent DIEs
+        static List<DebuggingInformationEntry> InflateDieListRecursive(List<DebuggingInformationEntry> dieList, ref int index)
+        {
+            var output = new List<DebuggingInformationEntry>();
+            while (index < dieList.Count)
+            {
+                var die = dieList.ElementAt(index);
+                index++;
+                if (die == null)
+                    break;
+                if (die.HasChildren == DW_CHILDREN.Yes)
+                {
+                    var childDieList = InflateDieListRecursive(dieList, ref index);
+                    die.AddDieList(childDieList);
+                }
+                output.Add(die);
+            }
+            return output;
         }
 
     }

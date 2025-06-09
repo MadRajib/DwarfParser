@@ -382,11 +382,11 @@ namespace DwarfParser
         }
 
         // Read string from .debug_str
-        public static string StringPtr(List<byte> strData, int index)
+        public static string StringPtr(byte[] strBytes, int index)
         {
             var output = new List<byte>();
             byte character;
-            while ((character = strData.ElementAt(index)) > 0)
+            while ((character = strBytes[index]) > 0)
             {
                 output.Add(character);
                 index++;

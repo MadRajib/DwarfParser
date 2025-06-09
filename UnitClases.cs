@@ -42,7 +42,7 @@ namespace DwarfParser
             DieList = dieList;
         }
 
-        public string GetName(List<byte> strData)
+        public string GetName(byte[] strData)
         {
             return DieList.First().GetName(strData);
         }
@@ -111,7 +111,7 @@ namespace DwarfParser
             Children.AddRange(dieList);
         }
 
-        public String GetName(List<byte> strData)
+        public String GetName(byte[] strData)
         {
             string output = null;
             var attr = AttributeList.Find(a => a.Name == DW_AT.DW_AT_name);
@@ -125,7 +125,7 @@ namespace DwarfParser
                         break;
                     case DW_FORM.DW_FORM_strp:
                         var strp = BitConverter.ToInt32(attr.Value, 0);
-                        // output = StringPtr(strData, strp);
+                        output = Parser.StringPtr(strData, strp);
                         break;
                     default:
                         throw new NotImplementedException();
