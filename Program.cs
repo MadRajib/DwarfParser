@@ -1,0 +1,74 @@
+﻿using ELFSharp.ELF;
+using ELFSharp.ELF.Sections;
+
+namespace DwarfParser
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var elfPath = "";
+
+            switch (args.Length)
+            {
+                case 1:
+                    elfPath = args[0];
+                    break;
+                default:
+                    Console.WriteLine("Invalid number of parameters!");
+                    Console.WriteLine("Usage: DwarfParser.exe <My_elf_file.elf> [Symbol]");
+                    Environment.Exit(1);
+                    break;
+            }
+
+            var elfFile = ELFSharp.ELF.ELFReader.Load(elfPath);
+            var strData = elfFile.Sections.Where(s => s.Name == ".debug_str").First().GetContents();
+
+            var abbrevList = ExtractAbbrevList(elfFile);
+            var cuList = ExtractCuList(elfFile, abbrevList);
+        }
+
+        static List<Abbreviation> ExtractAbbrevList(IELF elfFile)
+        {
+            var abbrevList = new List<Abbreviation>();
+            var abbrevBytes = elfFile.Sections.Where(s => s.Name == ".debug_abbrev").First().GetContents();
+
+            int index = 0;
+            while (index < abbrevBytes.Length)
+            {
+                var startIndex = index;
+                Abbreviation abbrev;
+                while ((abbrev = Parser.ParseAbbreviation(abbrevBytes, ref index, startIndex)) != null)
+                {
+                    abbrevList.Add(abbrev);
+                }
+            }
+
+            return abbrevList;
+
+        }
+
+        static List<CompilationUnit> ExtractCuList(IELF elfFile, List<Abbreviation> abbrevList)
+        {
+            var cuListFlat = new List<CompilationUnit>();
+            var cuList = new List<CompilationUnit>();
+            var index = 0;
+
+            var infoBytes = elfFile.Sections.Where(s => s.Name == ".debug_info").First().GetContents();
+
+            CompilationUnit cu;
+            while ((cu = Parser.ParseCU(infoBytes, ref index, abbrevList)) != null)
+                cuListFlat.Add(cu);
+
+            // foreach (var c in cuListFlat)
+                // {
+                //     index = 0;
+                //     var inflatedCu = new CompilationUnit(,);
+                //     cuList.Add(inflatedCu);
+                // }
+
+                return cuList;
+        }
+
+    }
+}

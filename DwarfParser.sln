@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DwarfParser", "DwarfParser.csproj", "{74FCC88A-4AE7-346A-58E6-266903E23609}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{74FCC88A-4AE7-346A-58E6-266903E23609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74FCC88A-4AE7-346A-58E6-266903E23609}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74FCC88A-4AE7-346A-58E6-266903E23609}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74FCC88A-4AE7-346A-58E6-266903E23609}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC090590-1C89-450D-897F-7CC5AEF8B058}
+	EndGlobalSection
+EndGlobal
