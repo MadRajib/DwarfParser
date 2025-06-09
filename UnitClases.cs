@@ -68,7 +68,7 @@ namespace DwarfParser
         public ushort Version; // DWARF version
         public byte Unit_type;
         public ulong AbbrevOffset { get; } // Offset into .debug_abbrev
-        byte PtrSize; // Size in bytes of an address
+        public byte AddrSize { get; } // Size in bytes of an address
 
 
         public CompilationUnitHeader(int id, ulong length, ushort version, byte unit_type, ulong offset, byte size)
@@ -78,7 +78,7 @@ namespace DwarfParser
             Version = version;
             Unit_type = unit_type;
             AbbrevOffset = offset;
-            PtrSize = size;
+            AddrSize = size;
         }
     }
 
