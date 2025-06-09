@@ -18,11 +18,14 @@ namespace DwarfParser
 
             while (index < abbrevData.Length)
             {
+                UInt32 val = 0;
                 var name = LEB128.ReadUnsigned(abbrevData, ref index);
                 var form = LEB128.ReadUnsigned(abbrevData, ref index);
+                if (form == (UInt32)DW_FORM.ImplicitConst)
+                    val = (UInt32)LEB128.ReadUnsigned(abbrevData, ref index);
                 if (name == 0 && form == 0)
-                    break;
-                abbreviation.AddAttribute(new Attribute(name, form));
+                        break;
+                abbreviation.AddAttribute(new Attribute(name, form, val));
             }
             return abbreviation;
         }
