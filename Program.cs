@@ -25,6 +25,15 @@ namespace DwarfParser
             var strData = elfFile.Sections.Where(s => s.Name == ".debug_str").First().GetContents();
 
             var abbrevList = ExtractAbbrevList(elfFile);
+
+            foreach (var item in abbrevList)
+            {
+                Console.Write($"{item.ToString()}");
+                foreach (var child in item.AttributeList)
+                {
+                    Console.WriteLine($"\t {child.ToString()}");
+                }
+            } 
             var cuList = ExtractCuList(elfFile, abbrevList);
         }
 

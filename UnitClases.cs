@@ -9,10 +9,13 @@ namespace DwarfParser
         public DW_FORM Form { get; }
         public byte[] Value { get; }
 
-        public Attribute(ulong name, ulong form)
+         public UInt32 Const_val { get;} // Only used for implicit const
+
+        public Attribute(ulong name, ulong form, UInt32 val = 0)
         {
             Name = (DW_AT)name;
             Form = (DW_FORM)form;
+            Const_val = val;
         }
 
         public Attribute(DW_AT name, DW_FORM form, byte[] value)
@@ -24,7 +27,7 @@ namespace DwarfParser
 
         public override string ToString()
         {
-            return $"{Name} [{Form}] ({BitConverter.ToString(Value)})";
+            return $"{Name} [{Form}]";
         }
     }
 
