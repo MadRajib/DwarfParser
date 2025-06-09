@@ -9,7 +9,7 @@ namespace DwarfParser
         public DW_FORM Form { get; }
         public byte[] Value { get; }
 
-         public UInt32 Const_val { get;} // Only used for implicit const
+        public UInt32 Const_val { get; } // Only used for implicit const
 
         public Attribute(ulong name, ulong form, UInt32 val = 0)
         {
@@ -79,6 +79,11 @@ namespace DwarfParser
             Unit_type = unit_type;
             AbbrevOffset = offset;
             AddrSize = size;
+        }
+
+        public override string ToString()
+        {
+            return $"Id: {Id} len: {Length:x} Version: {Version} unit_type: {Unit_type} abbrev_off: {AbbrevOffset} addr_size: {AddrSize}";
         }
     }
 
