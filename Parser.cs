@@ -22,7 +22,7 @@ namespace DwarfParser
                 var name = LEB128.ReadUnsigned(abbrevData, ref index);
                 var form = LEB128.ReadUnsigned(abbrevData, ref index);
 
-                if (form == (UInt32)DW_FORM.ImplicitConst)
+                if (form == (UInt32)DW_FORM.DW_FORM_implicit_const)
                     val = (UInt32)LEB128.ReadUnsigned(abbrevData, ref index);
                 
                 if (name == 0 && form == 0)
@@ -138,7 +138,7 @@ namespace DwarfParser
 
                 Attribute attr;
 
-                if (abbrevAttr.Form == DW_FORM.ImplicitConst)
+                if (abbrevAttr.Form == DW_FORM.DW_FORM_implicit_const)
                 {
                     attr = new Attribute((ulong)abbrevAttr.Name, (ulong)abbrevAttr.Form, abbrevAttr.Const_val);
                     Console.WriteLine($"\t {attr.ToString()}");
@@ -162,7 +162,7 @@ namespace DwarfParser
             // Console.WriteLine($" atttribute.Form {attribute.Form}");
             switch (attribute.Form)
             {
-                case DW_FORM.Addr:
+                case DW_FORM.DW_FORM_addr:
                     {
                         byte[] addrBytes = new byte[4];
                         Array.Copy(infoBytes, index, addrBytes, 0, 4);
@@ -170,7 +170,7 @@ namespace DwarfParser
                         return addrBytes;
 
                     }
-                case DW_FORM.DwarfBlock2:
+                case DW_FORM.DW_FORM_block2:
                     {
                         var numBytes = BitConverter.ToUInt16(infoBytes, index);
                         index += 2;
@@ -180,7 +180,7 @@ namespace DwarfParser
                         index += numBytes;
                         return blockBytes;
                     }
-                case DW_FORM.DwarfBlock4:
+                case DW_FORM.DW_FORM_block4:
                     {
                         var numBytes = BitConverter.ToInt32(infoBytes, index);
                         index += 4;
@@ -190,14 +190,14 @@ namespace DwarfParser
                         index += numBytes;
                         return blockBytes;
                     }
-                case DW_FORM.Data2:
+                case DW_FORM.DW_FORM_data2:
                     {
                         byte[] lenBytes = new byte[2];
                         Array.Copy(infoBytes, index, lenBytes, 0, 2);
                         index += 2;
                         return lenBytes;
                     }
-                case DW_FORM.Data4:
+                case DW_FORM.DW_FORM_data4:
                     {
                         byte[] lenBytes = new byte[4];
                         Array.Copy(infoBytes, index, lenBytes, 0, 4);
@@ -205,7 +205,7 @@ namespace DwarfParser
                         return lenBytes;
 
                     }
-                case DW_FORM.Data8:
+                case DW_FORM.DW_FORM_data8:
                     {
                         byte[] lenBytes = new byte[8];
                         Array.Copy(infoBytes, index, lenBytes, 0, 8);
@@ -213,7 +213,7 @@ namespace DwarfParser
                         return lenBytes;
 
                     }
-                case DW_FORM.String:
+                case DW_FORM.DW_FORM_string:
                     {
                         var str = new List<byte>();
                         while (index < infoBytes.Length)
@@ -226,7 +226,7 @@ namespace DwarfParser
                         }
                         return str.ToArray();
                     }
-                case DW_FORM.DwarfBlock:
+                case DW_FORM.DW_FORM_block:
                     {
                         var numBytes = (int)LEB128.ReadUnsigned(infoBytes, ref index);
                         byte[] blockBytes = new byte[numBytes];
@@ -234,7 +234,7 @@ namespace DwarfParser
                         index += numBytes;
                         return blockBytes;
                     }
-                case DW_FORM.DwarfBlock1:
+                case DW_FORM.DW_FORM_block1:
                     {
                         var numBytes = (int)infoBytes[index];
                         index++;
@@ -243,7 +243,7 @@ namespace DwarfParser
                         index += numBytes;
                         return blockBytes;
                     }
-                case DW_FORM.Data1:
+                case DW_FORM.DW_FORM_data1:
                     {
 
                         byte[] lenBytes = new byte[1];
@@ -251,65 +251,65 @@ namespace DwarfParser
                         index += 1;
                         return lenBytes;
                     }
-                case DW_FORM.Flag:
+                case DW_FORM.DW_FORM_flag:
                     {
                         byte[] lenBytes = new byte[1];
                         Array.Copy(infoBytes, index, lenBytes, 0, 1);
                         index += 1;
                         return lenBytes;
                     }
-                case DW_FORM.Sdata:
+                case DW_FORM.DW_FORM_sdata:
                     return BitConverter.GetBytes(LEB128.ReadSigned(infoBytes, ref index));
-                case DW_FORM.Strp:
+                case DW_FORM.DW_FORM_strp:
                     {
                         byte[] lenBytes = new byte[4];
                         Array.Copy(infoBytes, index, lenBytes, 0, 4);
                         index += 4;
                         return lenBytes;
                     }
-                case DW_FORM.Udata:
+                case DW_FORM.DW_FORM_udata:
                     return BitConverter.GetBytes(LEB128.ReadUnsigned(infoBytes, ref index));
-                case DW_FORM.RefAddr:
+                case DW_FORM.DW_FORM_ref_addr:
                     {
                         byte[] lenBytes = new byte[4];
                         Array.Copy(infoBytes, index, lenBytes, 0, 4);
                         index += 4;
                         return lenBytes;
                     }
-                case DW_FORM.Ref1:
+                case DW_FORM.DW_FORM_ref1:
                     {
                         var reference = infoBytes[index];
                         index += 1;
                         ulong offset = (ulong)(cuId + reference);
                         return BitConverter.GetBytes(offset);
                     }
-                case DW_FORM.Ref2:
+                case DW_FORM.DW_FORM_ref2:
                     {
                         var reference = BitConverter.ToUInt16(infoBytes, index);
                         index += 2;
                         ulong offset = (ulong)(cuId + reference);
                         return BitConverter.GetBytes(offset);
                     }
-                case DW_FORM.Ref4:
+                case DW_FORM.DW_FORM_ref4:
                     {
                         var reference = BitConverter.ToUInt32(infoBytes, index);
                         index += 4;
                         ulong offset = (ulong)(cuId + reference);
                         return BitConverter.GetBytes(offset);
                     }
-                case DW_FORM.Ref8:
+                case DW_FORM.DW_FORM_ref8:
                     {
                         var reference = BitConverter.ToUInt64(infoBytes, index);
                         index += 8;
                         ulong offset = (ulong)cuId + reference;
                         return BitConverter.GetBytes(offset);
                     }
-                case DW_FORM.RefUdata:
+                case DW_FORM.DW_FORM_ref_udata:
                     {
                         var reference = LEB128.ReadUnsigned(infoBytes, ref index);
                         return BitConverter.GetBytes((ulong)cuId + reference);
                     }
-                case DW_FORM.Indirect:
+                case DW_FORM.DW_FORM_indirect:
                     {
                         // var form = LEB128.ReadUnsigned(infoBytes, ref index);
                         // attribute.Form = (DW_FORM)form;
@@ -317,14 +317,14 @@ namespace DwarfParser
                     }
                     throw new NotImplementedException("DW_FORM_indirect not yet implemented.");
                 // DWARF 4
-                case DW_FORM.SecOffset:
+                case DW_FORM.DW_FORM_sec_offset:
                     {
                         //TODO 64bit dwarf or 32 bit dwarf
                         var offset = BitConverter.ToUInt32(infoBytes, index);
                         index += 4;
                         return BitConverter.GetBytes(offset);
                     }
-                case DW_FORM.Exprloc:
+                case DW_FORM.DW_FORM_exprloc:
                     {
                         ulong exprLen = LEB128.ReadUnsigned(infoBytes, ref index);
                         byte[] exprBytes = new byte[exprLen];
@@ -332,44 +332,45 @@ namespace DwarfParser
                         index += (int)exprLen;
                         return exprBytes;
                     }
-                case DW_FORM.FlagPresent:
-                case DW_FORM.RefSig8:
-                    throw new NotImplementedException($"DWARF 4 form {attribute.Form:x} not yet implemented.");
+                case DW_FORM.DW_FORM_flag_present:
+                    return [1];
+                
                 // DWARF 5
-                case DW_FORM.Strx:
-                case DW_FORM.Addrx:
-                case DW_FORM.RefSup4:
-                case DW_FORM.StrpSup:
-                case DW_FORM.Data16:
+                case DW_FORM.DW_FORM_strx:
+                case DW_FORM.DW_FORM_addrx:
+                case DW_FORM.DW_FORM_ref_sup4:
+                case DW_FORM.DW_FORM_strp_sup:
+                case DW_FORM.DW_FORM_data16:
                     throw new NotImplementedException($"DWARF 5 form {attribute.Form:x} not yet implemented.");
-                case DW_FORM.LineStrp:
+                case DW_FORM.DW_FORM_line_strp:
                     {
                         var offset = BitConverter.ToUInt32(infoBytes, index);
                         index += 4;
                         return [0, 0, 0, 0];
                     }
-                case DW_FORM.ImplicitConst:
-                    {
-                        return null;
-                    }
-                case DW_FORM.Loclistx:
-                case DW_FORM.Rnglistx:
-                case DW_FORM.RefSup8:
-                case DW_FORM.Strx1:
-                case DW_FORM.Strx2:
-                case DW_FORM.Strx3:
-                case DW_FORM.Strx4:
+                case DW_FORM.DW_FORM_ref_sig8:
+                    throw new NotImplementedException($"DWARF 4 form {attribute.Form:x} not yet implemented.");
+                case DW_FORM.DW_FORM_implicit_const:
+                    return null;
+                case DW_FORM.DW_FORM_loclistx:
+                case DW_FORM.DW_FORM_rnglistx:
+                case DW_FORM.DW_FORM_ref_sup8:
+                case DW_FORM.DW_FORM_strx1:
+                case DW_FORM.DW_FORM_strx2:
+                case DW_FORM.DW_FORM_strx3:
+                case DW_FORM.DW_FORM_strx4:
                     throw new NotImplementedException($"DWARF 5 form {attribute.Form:x} not yet implemented.");
-                case DW_FORM.Addrx1:
-                case DW_FORM.Addrx2:
-                case DW_FORM.Addrx3:
-                case DW_FORM.Addrx4:
+                case DW_FORM.DW_FORM_addrx1:
+                case DW_FORM.DW_FORM_addrx2:
+                case DW_FORM.DW_FORM_addrx3:
+                case DW_FORM.DW_FORM_addrx4:
                     return null;
                 // GNU extensions
-                case DW_FORM.GnuRefAlt:
-                case DW_FORM.GnuStrpAlt:
+                case DW_FORM.DW_FORM_GNU_addr_index:
+                case DW_FORM.DW_FORM_GNU_str_index:
+                case DW_FORM.DW_FORM_GNU_ref_alt:
+                case DW_FORM.DW_FORM_GNU_strp_alt:
                     throw new NotImplementedException($"GNU DWARF form {attribute.Form:x} not yet implemented.");
-
                 default:
                     throw new NotImplementedException($"Unknown DW_FORM {attribute.Form:x}");
             }

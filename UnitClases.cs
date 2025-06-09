@@ -114,16 +114,16 @@ namespace DwarfParser
         public String GetName(List<byte> strData)
         {
             string output = null;
-            var attr = AttributeList.Find(a => a.Name == DW_AT.Name);
+            var attr = AttributeList.Find(a => a.Name == DW_AT.DW_AT_name);
 
             if (attr != null)
             {
                 switch (attr.Form)
                 {
-                    case DW_FORM.String:
+                    case DW_FORM.DW_FORM_string:
                         output = Encoding.ASCII.GetString(attr.Value);
                         break;
-                    case DW_FORM.Strp:
+                    case DW_FORM.DW_FORM_strp:
                         var strp = BitConverter.ToInt32(attr.Value, 0);
                         // output = StringPtr(strData, strp);
                         break;
@@ -139,7 +139,7 @@ namespace DwarfParser
         public int GetTypeId()
         {
             int output = 0;
-            var typeId = AttributeList.Find(a => a.Name == DW_AT.Type);
+            var typeId = AttributeList.Find(a => a.Name == DW_AT.DW_AT_type);
 
             if (typeId != null)
                 output = BitConverter.ToInt32(typeId.Value, 0);
