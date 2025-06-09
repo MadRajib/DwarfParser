@@ -24,9 +24,10 @@ namespace DwarfParser
 
                 if (form == (UInt32)DW_FORM.ImplicitConst)
                     val = (UInt32)LEB128.ReadUnsigned(abbrevData, ref index);
-
+                
                 if (name == 0 && form == 0)
                     break;
+                
                 abbreviation.AddAttribute(new Attribute(name, form, val));
             }
             return abbreviation;
