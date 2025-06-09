@@ -274,7 +274,10 @@ namespace DwarfParser
         DW_AT_GNU_ranges_base = 0x2132,
         DW_AT_GNU_addr_base = 0x2133,
         DW_AT_GNU_pubnames = 0x2134,
-        DW_AT_GNU_pubtypes = 0x2135
+        DW_AT_GNU_pubtypes = 0x2135,
+        
+        DW_AT_GNU_locviews = 0x2137,
+        DW_AT_GNU_entry_view = 0x2138,
     }
 
     public enum DW_FORM
