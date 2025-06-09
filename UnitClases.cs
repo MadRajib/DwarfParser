@@ -152,17 +152,15 @@ namespace DwarfParser
     {
         public ulong Offset { get; }
         public ulong Code { get; }
-        public UInt32 Const_val { get;} // Only used for implicit const
         public DW_TAG Tag { get; }
         public DW_CHILDREN HasChildren { get; }
         public List<Attribute> AttributeList { get; }
 
-        public Abbreviation(int start, ulong code, DW_TAG tag, DW_CHILDREN hasChildren, UInt32 val = 0)
+        public Abbreviation(int start, ulong code, DW_TAG tag, DW_CHILDREN hasChildren)
         {
             Offset = (ulong)start;
             Code = code;
             Tag = tag;
-            Const_val = val;
             HasChildren = hasChildren;
             AttributeList = new List<Attribute>();
         }
