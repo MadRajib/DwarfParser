@@ -21,10 +21,12 @@ namespace DwarfParser
                 UInt32 val = 0;
                 var name = LEB128.ReadUnsigned(abbrevData, ref index);
                 var form = LEB128.ReadUnsigned(abbrevData, ref index);
+
                 if (form == (UInt32)DW_FORM.ImplicitConst)
                     val = (UInt32)LEB128.ReadUnsigned(abbrevData, ref index);
+
                 if (name == 0 && form == 0)
-                        break;
+                    break;
                 abbreviation.AddAttribute(new Attribute(name, form, val));
             }
             return abbreviation;
@@ -40,11 +42,6 @@ namespace DwarfParser
             var cuLength = cuID + unit_length_bytes_count + (int)cuh.Length;
 
             var abbrevListFiltered = abbrevList.Where(a => a.Offset == cuh.AbbrevOffset).ToList();
-
-            foreach (var item in abbrevListFiltered)
-            {
-                Console.WriteLine(item.ToString());   
-            }
 
             var dieList = new List<DebuggingInformationEntry>();
             while (index < cuLength)
@@ -137,16 +134,21 @@ namespace DwarfParser
             Console.Write($"{index:X}   {abbrev.Tag}\n");
             foreach (var abbrevAttr in abbrev.AttributeList)
             {
-                try
+
+                Attribute attr;
+
+                if (abbrevAttr.Form == DW_FORM.ImplicitConst)
                 {
-                    byte[] value = GetAttributeValue(infoBytes, ref index, abbrevAttr, cuId);
-                    Attribute attr = new Attribute(abbrevAttr.Name, abbrevAttr.Form, value);
-                    Console.WriteLine($"{attr.ToString()}");
+                    attr = new Attribute((ulong)abbrevAttr.Name, (ulong)abbrevAttr.Form, abbrevAttr.Const_val);
+                    Console.WriteLine($"\t {attr.ToString()}");
                     die.AddAttribute(attr);
                 }
-                catch (NotImplementedException ex)
+                else
                 {
-                    Console.WriteLine($"{ex.ToString()}");
+                    byte[] value = GetAttributeValue(infoBytes, ref index, abbrevAttr, cuId);
+                    attr = new Attribute(abbrevAttr.Name, abbrevAttr.Form, value);
+                    Console.WriteLine($"\t {attr.ToString()}");
+                    die.AddAttribute(attr);
                 }
             }
 
@@ -156,7 +158,7 @@ namespace DwarfParser
         // Read attribute value from .debug_info
         public static byte[] GetAttributeValue(byte[] infoBytes, ref int index, Attribute attribute, int cuId)
         {
-            Console.WriteLine($" atttribute.Form {attribute.Form}");
+            // Console.WriteLine($" atttribute.Form {attribute.Form}");
             switch (attribute.Form)
             {
                 case DW_FORM.Addr:
@@ -242,7 +244,7 @@ namespace DwarfParser
                     }
                 case DW_FORM.Data1:
                     {
-                        
+
                         byte[] lenBytes = new byte[1];
                         Array.Copy(infoBytes, index, lenBytes, 0, 1);
                         index += 1;
@@ -291,7 +293,6 @@ namespace DwarfParser
                     {
                         var reference = BitConverter.ToUInt32(infoBytes, index);
                         index += 4;
-                        Console.WriteLine($"offset {reference:x}");
                         ulong offset = (ulong)(cuId + reference);
                         return BitConverter.GetBytes(offset);
                     }
@@ -347,6 +348,9 @@ namespace DwarfParser
                         return [0, 0, 0, 0];
                     }
                 case DW_FORM.ImplicitConst:
+                    {
+                        return null;
+                    }
                 case DW_FORM.Loclistx:
                 case DW_FORM.Rnglistx:
                 case DW_FORM.RefSup8:

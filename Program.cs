@@ -26,14 +26,14 @@ namespace DwarfParser
 
             var abbrevList = ExtractAbbrevList(elfFile);
 
-            foreach (var item in abbrevList)
-            {
-                Console.Write($"{item.ToString()}");
-                foreach (var child in item.AttributeList)
-                {
-                    Console.WriteLine($"\t {child.ToString()}");
-                }
-            } 
+            // foreach (var item in abbrevList)
+            // {
+            //     Console.Write($"{item.ToString()}\n");
+            //     foreach (var child in item.AttributeList)
+            //     {
+            //         Console.WriteLine($"\t {child.ToString()}");
+            //     }
+            // } 
             var cuList = ExtractCuList(elfFile, abbrevList);
         }
 
