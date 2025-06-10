@@ -131,7 +131,7 @@ namespace DwarfParser
                 return null;
 
             var die = new DebuggingInformationEntry(id, code, abbrev.Tag, abbrev.HasChildren);
-            Console.Write($"{index:X}   {abbrev.Tag} addrsize:{addrSize}\n");
+            Console.Write($"Code:{die.Code:X} {index:X}    {abbrev.Tag} addrsize:{addrSize}\n");
             foreach (var abbrevAttr in abbrev.AttributeList)
             {
 
