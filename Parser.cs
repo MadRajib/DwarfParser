@@ -381,18 +381,39 @@ namespace DwarfParser
                     }
                 case DW_FORM.DW_FORM_strx2:
                     {
-                        index += 2;
-                        return [0];
+                        const byte sz = 2;
+                        byte[] offBytes = new byte[sz];
+                        index += sz;
+                        Array.Copy(infoBytes, index, offBytes, 0, sz);
+
+                        UInt64 offx = BitConverter.ToUInt16(offBytes);
+                        offx = DebugStrOff.readOffsetFrom(offx);
+
+                        return BitConverter.GetBytes(offx);
                     }
                 case DW_FORM.DW_FORM_strx3:
                     {
-                        index += 4;
-                        return [0];
+                        const byte sz = 4;
+                        byte[] offBytes = new byte[sz];
+                        index += sz;
+                        Array.Copy(infoBytes, index, offBytes, 0, sz);
+
+                        UInt64 offx = BitConverter.ToUInt32(offBytes);
+                        offx = DebugStrOff.readOffsetFrom(offx);
+                        index++;
+                        return BitConverter.GetBytes(offx);
                     }
                 case DW_FORM.DW_FORM_strx4:
                     {
-                        index += 8;
-                        return [0];
+                        const byte sz = 8;
+                        byte[] offBytes = new byte[sz];
+                        index += sz;
+                        Array.Copy(infoBytes, index, offBytes, 0, sz);
+
+                        UInt64 offx = BitConverter.ToUInt64(offBytes);
+                        offx = DebugStrOff.readOffsetFrom(offx);
+                        index++;
+                        return BitConverter.GetBytes(offx);
                     }
                 case DW_FORM.DW_FORM_addrx1:
                 case DW_FORM.DW_FORM_addrx2:
