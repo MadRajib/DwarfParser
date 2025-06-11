@@ -1,5 +1,13 @@
 namespace DwarfParser
 {
+
+    public enum ELF_DEBUG_SECTIONS
+    {
+        STR = 0x01,
+        INFO = 0x02,
+        ABBREV = 0x03,
+        STR_OFFS = 0x04,
+    }
     public enum DW_TAG
     {
         DW_TAG_array_type = 0x01,
