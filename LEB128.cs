@@ -8,20 +8,24 @@ namespace DwarfParser
 {
     class LEB128
     {
+
         public static ulong ReadUnsigned(byte[] data, ref int index)
         {
-            var input = new List<byte>();
-            byte chunk;
+            ulong result = 0;
+            int shift = 0;
 
-            do
+            while (true)
             {
-                chunk = data[index];
-                index++;
+                byte b = data[index++];
+                result |= ((ulong)(b & 0x7F)) << shift;
 
-                input.Add(chunk);
-            } while ((chunk & 0x80) > 0);
+                if ((b & 0x80) == 0)
+                    break;
 
-            return LEB128.DecodeUnsigned(input.ToArray());
+                shift += 7;
+            }
+
+            return result;
         }
 
         public static long ReadSigned(byte[] data, ref int index)

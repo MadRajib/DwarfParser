@@ -29,15 +29,15 @@ namespace DwarfParser
             DebugStr debugStr = new DebugStr(elfFile);
 
             var abbrevList = ExtractAbbrevList(elfFile);
-            var cuList = ExtractCuList(elfFile, abbrevList);
+            // var cuList = ExtractCuList(elfFile, abbrevList);
 
-            foreach (var cu in cuList)
-            {
-                var index = 0;
-                DebuggingInformationEntry root_die = cu.DieList[index++];
-                print_childrens(root_die, 0);
+            // foreach (var cu in cuList)
+            // {
+            //     var index = 0;
+            //     DebuggingInformationEntry root_die = cu.DieList[index++];
+            //     print_childrens(root_die, 0);
 
-            }
+            // }
 
         }
 
@@ -58,6 +58,8 @@ namespace DwarfParser
         static List<Abbreviation> ExtractAbbrevList(IELF elfFile)
         {
             var abbrevList = new List<Abbreviation>();
+            var abbrevMap = new Dictionary<ulong, Abbreviation>();
+
             var abbrevBytes = elfFile.Sections.Where(s => s.Name == ".debug_abbrev").First().GetContents();
 
             int index = 0;
@@ -68,6 +70,7 @@ namespace DwarfParser
                 while ((abbrev = Parser.ParseAbbreviation(abbrevBytes, ref index, startIndex)) != null)
                 {
                     abbrevList.Add(abbrev);
+                    abbrevMap[abbrev.Code] = abbrev;
                 }
             }
 
