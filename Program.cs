@@ -28,7 +28,6 @@ namespace DwarfParser
             var cuList = ExtractCuList(elfFile, abbrevList);
 
 
-
             foreach (var cu in cuList)
             {
                 var index = 0;

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DwarfParser
@@ -69,9 +70,10 @@ namespace DwarfParser
         public byte Unit_type;
         public ulong AbbrevOffset { get; } // Offset into .debug_abbrev
         public byte AddrSize { get; } // Size in bytes of an address
+        public bool Is64BitDwarf { get; }
 
 
-        public CompilationUnitHeader(int id, ulong length, ushort version, byte unit_type, ulong offset, byte size)
+        public CompilationUnitHeader(int id, ulong length, ushort version, byte unit_type, ulong offset, byte size, bool is64bitDW)
         {
             Id = id;
             Length = length;
@@ -79,6 +81,7 @@ namespace DwarfParser
             Unit_type = unit_type;
             AbbrevOffset = offset;
             AddrSize = size;
+            Is64BitDwarf = is64bitDW;
         }
 
         public override string ToString()
@@ -132,8 +135,14 @@ namespace DwarfParser
                         var strp = BitConverter.ToInt32(attr.Value, 0);
                         output = Parser.StringPtr(strData, strp);
                         break;
+                    case DW_FORM.DW_FORM_strx1:
+                    case DW_FORM.DW_FORM_strx2:
+                    case DW_FORM.DW_FORM_strx3:
+                    case DW_FORM.DW_FORM_strx4:
+                        output = "todo";
+                        break;
                     default:
-                        throw new NotImplementedException();
+                        throw new NotImplementedException($"{(DW_FORM)attr.Form}");
                         break;
                 }
             }
