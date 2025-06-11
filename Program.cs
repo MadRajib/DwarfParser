@@ -26,6 +26,27 @@ namespace DwarfParser
 
             var abbrevList = ExtractAbbrevList(elfFile);
             var cuList = ExtractCuList(elfFile, abbrevList);
+
+            foreach (var cu in cuList)
+            {
+                var index = 0;
+                var root_die = cu.DieList.First();
+                if (root_die == null) continue;
+                if (root_die.HasChildren == 0) continue;
+
+                foreach (var die in root_die.Children)
+                {
+                    if (die != null && die.Tag == DW_TAG.DW_TAG_variable)
+                    {
+                        Console.WriteLine($"Gobal var name: {die.GetName(strData)} {die.Tag} {die.Code:x} ");
+                        var attr = die.AttributeList.Find(a => a.Name == DW_AT.DW_AT_location);
+                        if (attr == null) continue;
+
+                    }
+                }
+
+            }
+
         }
 
         static List<Abbreviation> ExtractAbbrevList(IELF elfFile)
