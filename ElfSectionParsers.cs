@@ -33,6 +33,7 @@ namespace DwarfParser
         UInt16 version;
         UInt64 unit_length;
         UInt16 padding = 0;
+        byte addr_size = 0;
         public DebugStrOff(IELF elfFile)
         {
             dataBytes = elfFile.Sections.Where(s => s.Name == ".debug_str_offsets").First().GetContents();
@@ -50,11 +51,13 @@ namespace DwarfParser
                 unit_length = BitConverter.ToUInt64(dataBytes, (int)index);
                 index += 8;
                 unit_length_bytes_count = 12;
+                addr_size = 8;
             }
             else
             {
                 is64bitDW = false;
                 unit_length_bytes_count = 4;
+                addr_size = 4;
             }
 
             version = BitConverter.ToUInt16(dataBytes, (int)index);
@@ -66,15 +69,21 @@ namespace DwarfParser
 
         public UInt64 readOffsetFrom(UInt64 offset)
         {
+            UInt64 off = index + (offset * addr_size);
+
+
+            byte[] rawOffsetBytes = new byte[addr_size];
+            Array.Copy(dataBytes, (int)off, rawOffsetBytes, 0, addr_size);
+
             if (is64bitDW)
-                return BitConverter.ToUInt64(dataBytes, (int)(index + offset));
+                return BitConverter.ToUInt64(rawOffsetBytes, 0);
             else
-                return BitConverter.ToUInt32(dataBytes, (int)(index + offset));
+                return BitConverter.ToUInt32(rawOffsetBytes, 0);
         }
 
         public override string ToString()
         {
-            return $" unit_len {unit_length} ver {version}  padd: {padding}";
+            return $" unit_len {unit_length} ver {version}  padd: {padding} base :{index:x}";
         }
     }
 

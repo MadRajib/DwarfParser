@@ -161,7 +161,7 @@ namespace DwarfParser
         // Read attribute value from .debug_info
         public static byte[] GetAttributeValue(byte[] infoBytes, ref int index, Attribute attribute, CompilationUnitHeader CUH)
         {
-            if (CUH.AddrSize !=4 && CUH.AddrSize !=8)
+            if (CUH.AddrSize != 4 && CUH.AddrSize != 8)
             {
                 Console.WriteLine("Invalid address size");
                 Environment.Exit(0);

@@ -22,7 +22,14 @@ namespace DwarfParser
             }
 
             var elfFile = ELFSharp.ELF.ELFReader.Load(elfPath);
-            var strData = elfFile.Sections.Where(s => s.Name == ".debug_str").First().GetContents();
+
+            DebugStrOff debugStrOff = new DebugStrOff(elfFile);
+            Console.WriteLine(debugStrOff.ToString());
+
+            DebugStr debugStr = new DebugStr(elfFile);
+            var off = debugStrOff.readOffsetFrom(2);
+            Console.Write($"off {off} ");
+            Console.WriteLine($"{debugStr.readStrFrom(off)}");
 
             var abbrevList = ExtractAbbrevList(elfFile);
             var cuList = ExtractCuList(elfFile, abbrevList);
