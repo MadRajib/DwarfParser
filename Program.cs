@@ -27,7 +27,7 @@ namespace DwarfParser
             Console.WriteLine(debugStrOff.ToString());
 
             DebugStr debugStr = new DebugStr(elfFile);
-            var off = debugStrOff.readOffsetFrom(2);
+            var off = DebugStrOff.readOffsetFrom(2);
             Console.Write($"off {off} ");
             Console.WriteLine($"{debugStr.readStrFrom(off)}");
 

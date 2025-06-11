@@ -26,14 +26,14 @@ namespace DwarfParser
 
     public class DebugStrOff
     {
-        private byte[] dataBytes;
-        private ulong index = 0;
+        private static byte[] dataBytes;
+        private static ulong index = 0;
         private byte unit_length_bytes_count;
-        private bool is64bitDW = false;
+        private static bool is64bitDW = false;
         UInt16 version;
         UInt64 unit_length;
         UInt16 padding = 0;
-        byte addr_size = 0;
+        private static byte addr_size = 0;
         public DebugStrOff(IELF elfFile)
         {
             dataBytes = elfFile.Sections.Where(s => s.Name == ".debug_str_offsets").First().GetContents();
@@ -67,7 +67,7 @@ namespace DwarfParser
             index += 2;
         }
 
-        public UInt64 readOffsetFrom(UInt64 offset)
+        public static UInt64 readOffsetFrom(UInt64 offset)
         {
             UInt64 off = index + (offset * addr_size);
 

@@ -329,7 +329,7 @@ namespace DwarfParser
                         byte[] offBytes = new byte[addr_size];
 
                         Array.Copy(infoBytes, index, offBytes, 0, addr_size);
-                        
+
                         index += addr_size;
                         return offBytes;
                     }
@@ -374,8 +374,10 @@ namespace DwarfParser
                 case DW_FORM.DW_FORM_ref_sup8:
                 case DW_FORM.DW_FORM_strx1:
                     {
+                        UInt64 offx = infoBytes[index];
+                        offx = DebugStrOff.readOffsetFrom(offx);
                         index++;
-                        return [0];
+                        return BitConverter.GetBytes(offx);
                     }
                 case DW_FORM.DW_FORM_strx2:
                     {
