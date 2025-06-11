@@ -131,7 +131,7 @@ namespace DwarfParser
                 return null;
 
             var die = new DebuggingInformationEntry(id, code, abbrev.Tag, abbrev.HasChildren);
-            Console.Write($"Code:{die.Code:X} {index:X}    {abbrev.Tag} addrsize:{CUH.AddrSize}\n");
+            // Console.Write($"Code:{die.Code:X} {index:X}    {abbrev.Tag} addrsize:{CUH.AddrSize}\n");
 
             foreach (var abbrevAttr in abbrev.AttributeList)
             {
@@ -141,7 +141,7 @@ namespace DwarfParser
                 if (abbrevAttr.Form == DW_FORM.DW_FORM_implicit_const)
                 {
                     attr = new Attribute((ulong)abbrevAttr.Name, (ulong)abbrevAttr.Form, abbrevAttr.Const_val);
-                    Console.WriteLine($"\t {attr.ToString()} ({attr.Const_val})");
+                    // Console.WriteLine($"\t {attr.ToString()} ({attr.Const_val})");
                     die.AddAttribute(attr);
                 }
                 else
@@ -150,7 +150,7 @@ namespace DwarfParser
                     attr = new Attribute(abbrevAttr.Name, abbrevAttr.Form, value);
                     // Console.WriteLine($"\t {attr.ToString()} ({attr.Value:x})");
                     var bytes = attr.Value as byte[];
-                    Console.WriteLine($"\t {attr.ToString()} ({(bytes == null ? "null" : string.Join("", bytes.Select(b => b.ToString("X2"))))})");
+                    // Console.WriteLine($"\t {attr.ToString()} ({(bytes == null ? "null" : string.Join("", bytes.Select(b => b.ToString("X2"))))})");
                     die.AddAttribute(attr);
                 }
             }

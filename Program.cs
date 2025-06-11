@@ -1,5 +1,7 @@
-﻿using ELFSharp.ELF;
+﻿using System.Reflection.PortableExecutable;
+using ELFSharp.ELF;
 using ELFSharp.ELF.Sections;
+using Microsoft.VisualBasic;
 
 namespace DwarfParser
 {
@@ -24,16 +26,33 @@ namespace DwarfParser
             var elfFile = ELFSharp.ELF.ELFReader.Load(elfPath);
 
             DebugStrOff debugStrOff = new DebugStrOff(elfFile);
-            Console.WriteLine(debugStrOff.ToString());
-
             DebugStr debugStr = new DebugStr(elfFile);
-            var off = DebugStrOff.readOffsetFrom(2);
-            Console.Write($"off {off} ");
-            Console.WriteLine($"{debugStr.readStrFrom(off)}");
 
             var abbrevList = ExtractAbbrevList(elfFile);
             var cuList = ExtractCuList(elfFile, abbrevList);
 
+            foreach (var cu in cuList)
+            {
+                var index = 0;
+                DebuggingInformationEntry root_die = cu.DieList[index++];
+                print_childrens(root_die, 0);
+
+            }
+
+        }
+
+
+        static void print_childrens(DebuggingInformationEntry root_die, int tab_count)
+        {
+            for (int i = 0; i < tab_count; i++)
+                Console.Write("\t");
+            Console.Write($"{root_die.printString(tab_count)}");
+
+            foreach (var die in root_die.Children)
+            {
+                print_childrens(die, ++tab_count);
+            }
+            
         }
 
         static List<Abbreviation> ExtractAbbrevList(IELF elfFile)

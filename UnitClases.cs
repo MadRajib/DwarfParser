@@ -160,6 +160,26 @@ namespace DwarfParser
 
             return output;
         }
+
+        public string printString(int tab_count)
+        {
+            var str = "";
+            for (int i = 0; i < tab_count; i++)
+                str += "\t";
+            
+            var debug = str + ToString();
+            foreach (var attr in AttributeList)
+            {
+                debug += (str + "\t" + attr.ToString() + "\n");
+            }
+
+            return debug;
+        }
+        public override string ToString()
+        {   
+            return $"ID: {Id} Tag:[{(DW_TAG)Tag}] HasChildren:{HasChildren} Child Count:{Children.Count}\n";
+
+        }
     }
 
     class Abbreviation
