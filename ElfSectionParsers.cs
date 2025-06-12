@@ -67,9 +67,12 @@ namespace DwarfParser
             index += 2;
         }
 
-        public static UInt64 readOffsetFrom(UInt64 offset)
+        public static UInt64 readOffsetFrom(UInt64 offset, UInt64 base_offset)
         {
-            UInt64 off = index + (offset * addr_size);
+            UInt64 off = base_offset + (offset * addr_size);
+
+            if ((off + (ulong)addr_size) > (ulong)dataBytes.Length)
+                throw new IndexOutOfRangeException($"Not enough bytes in dataBytes to read offset: need {addr_size} bytes at {off}, but length is {dataBytes.Length}");
 
 
             byte[] rawOffsetBytes = new byte[addr_size];

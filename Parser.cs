@@ -146,7 +146,7 @@ namespace DwarfParser
                 }
                 else
                 {
-                    byte[] value = GetAttributeValue(infoBytes, ref index, abbrevAttr, CUH);
+                    byte[] value = GetAttributeValue(infoBytes, ref index, abbrevAttr, ref CUH);
                     attr = new Attribute(abbrevAttr.Name, abbrevAttr.Form, value);
                     // Console.WriteLine($"\t {attr.ToString()} ({attr.Value:x})");
                     var bytes = attr.Value as byte[];
@@ -159,7 +159,7 @@ namespace DwarfParser
         }
 
         // Read attribute value from .debug_info
-        public static byte[] GetAttributeValue(byte[] infoBytes, ref int index, Attribute attribute, CompilationUnitHeader CUH)
+        public static byte[] GetAttributeValue(byte[] infoBytes, ref int index, Attribute attribute, ref CompilationUnitHeader CUH)
         {
             if (CUH.AddrSize != 4 && CUH.AddrSize != 8)
             {
@@ -330,6 +330,12 @@ namespace DwarfParser
 
                         Array.Copy(infoBytes, index, offBytes, 0, addr_size);
 
+                        if (attribute.Name == DW_AT.DW_AT_str_offsets_base)
+                        {
+                            CUH.Sec_offset_seen = true;
+                            CUH.Sec_offset = CUH.Is64BitDwarf ?
+                                    BitConverter.ToUInt64(offBytes) : BitConverter.ToUInt32(offBytes);
+                        }
                         index += addr_size;
                         return offBytes;
                     }
@@ -375,7 +381,7 @@ namespace DwarfParser
                 case DW_FORM.DW_FORM_strx1:
                     {
                         UInt64 offx = infoBytes[index];
-                        offx = DebugStrOff.readOffsetFrom(offx);
+                        offx = DebugStrOff.readOffsetFrom(offx, CUH.Sec_offset);
                         index++;
                         return BitConverter.GetBytes(offx);
                     }
@@ -387,7 +393,7 @@ namespace DwarfParser
                         Array.Copy(infoBytes, index, offBytes, 0, sz);
 
                         UInt64 offx = BitConverter.ToUInt16(offBytes);
-                        offx = DebugStrOff.readOffsetFrom(offx);
+                        offx = DebugStrOff.readOffsetFrom(offx, CUH.Sec_offset);
 
                         return BitConverter.GetBytes(offx);
                     }
@@ -399,7 +405,7 @@ namespace DwarfParser
                         Array.Copy(infoBytes, index, offBytes, 0, sz);
 
                         UInt64 offx = BitConverter.ToUInt32(offBytes);
-                        offx = DebugStrOff.readOffsetFrom(offx);
+                        offx = DebugStrOff.readOffsetFrom(offx, CUH.Sec_offset);
                         index++;
                         return BitConverter.GetBytes(offx);
                     }
@@ -411,7 +417,7 @@ namespace DwarfParser
                         Array.Copy(infoBytes, index, offBytes, 0, sz);
 
                         UInt64 offx = BitConverter.ToUInt64(offBytes);
-                        offx = DebugStrOff.readOffsetFrom(offx);
+                        offx = DebugStrOff.readOffsetFrom(offx, CUH.Sec_offset);
                         index++;
                         return BitConverter.GetBytes(offx);
                     }

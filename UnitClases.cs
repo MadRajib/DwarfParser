@@ -71,6 +71,8 @@ namespace DwarfParser
         public ulong AbbrevOffset { get; } // Offset into .debug_abbrev
         public byte AddrSize { get; } // Size in bytes of an address
         public bool Is64BitDwarf { get; }
+        public bool Sec_offset_seen { get; set; }
+        public UInt64 Sec_offset { get; set; }
 
 
         public CompilationUnitHeader(int id, ulong length, ushort version, byte unit_type, ulong offset, byte size, bool is64bitDW)
@@ -82,6 +84,8 @@ namespace DwarfParser
             AbbrevOffset = offset;
             AddrSize = size;
             Is64BitDwarf = is64bitDW;
+            Sec_offset_seen = false;
+            Sec_offset = 0;
         }
 
         public override string ToString()
