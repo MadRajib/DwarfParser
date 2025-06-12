@@ -5,13 +5,13 @@ namespace DwarfParser
 {
     public class DebugStr
     {
-        private byte[] dataBytes;
+        private static byte[] dataBytes;
         public DebugStr(IELF elfFile)
         {
             dataBytes = elfFile.Sections.Where(s => s.Name == ".debug_str").First().GetContents();
         }
 
-        public String readStrFrom(UInt64 offset)
+        public static String readStrFrom(UInt64 offset)
         {
             var output = new List<byte>();
             byte character;
