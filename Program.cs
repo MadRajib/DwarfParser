@@ -28,8 +28,8 @@ namespace DwarfParser
             DebugStrOff debugStrOff = new DebugStrOff(elfFile);
             
             DebugStr debugStr = new DebugStr(elfFile);
-            var off = DebugStrOff.readOffsetFrom(0x0a);
-            Console.WriteLine($"{DebugStr.readStrFrom(off)}");
+            // var off = DebugStrOff.readOffsetFrom(0x0a);
+            // Console.WriteLine($"{DebugStr.readStrFrom(off)}");
 
             var abbrevList = ExtractAbbrevList(elfFile);
             var cuList = ExtractCuList(elfFile, abbrevList);
