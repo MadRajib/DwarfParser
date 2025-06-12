@@ -26,17 +26,33 @@ namespace DwarfParser
             var elfFile = ELFSharp.ELF.ELFReader.Load(elfPath);
 
             DebugStrOff debugStrOff = new DebugStrOff(elfFile);
+            
             DebugStr debugStr = new DebugStr(elfFile);
+            var off = DebugStrOff.readOffsetFrom(0x0a);
+            Console.WriteLine($"{DebugStr.readStrFrom(off)}");
 
             var abbrevList = ExtractAbbrevList(elfFile);
             var cuList = ExtractCuList(elfFile, abbrevList);
 
             foreach (var cu in cuList)
             {
-                var index = 0;
-                DebuggingInformationEntry root_die = cu.DieList[index++];
-                print_childrens(root_die, 0);
+                DebuggingInformationEntry root_die = cu.DieList[0];
 
+                if (root_die.HasChildren == DW_CHILDREN.No)
+                    continue;
+                
+                foreach (var die in root_die.Children)
+                {
+                    if (die.Tag == DW_TAG.DW_TAG_variable)
+                    {
+                        var attr = die.AttributeList.Find(a => a.Name == DW_AT.DW_AT_name);
+                        if (attr == null)
+                            continue;
+                        var offs = BitConverter.ToUInt64(attr.Value);
+                        Console.WriteLine($"{attr.ToString()} name: {DebugStr.readStrFrom(offs)}");
+                        
+                    }
+                }
             }
 
         }
@@ -50,7 +66,8 @@ namespace DwarfParser
 
             foreach (var die in root_die.Children)
             {
-                print_childrens(die, ++tab_count);
+                if (die.Tag == DW_TAG.DW_TAG_variable)
+                    print_childrens(die, ++tab_count);
             }
             
         }
