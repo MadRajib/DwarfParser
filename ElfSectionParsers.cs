@@ -75,7 +75,7 @@ namespace DwarfParser
                 throw new IndexOutOfRangeException($"Not enough bytes in dataBytes to read offset: need {addr_size} bytes at {off}, but length is {dataBytes.Length}");
 
 
-            byte[] rawOffsetBytes = new byte[addr_size];
+            byte[] rawOffsetBytes = new byte[8];
             Array.Copy(dataBytes, (int)off, rawOffsetBytes, 0, addr_size);
 
             if (is64bitDW)
